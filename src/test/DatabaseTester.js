@@ -1,7 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux';
-import todoJson from './TestTodoListData.json'
-import { getFirestore } from 'redux-firestore';
+import wireframJson from './wireframeTestData.json'
+import { getFirestore } from 'redux-firestore'
+import { Redirect, withRouter } from 'react-router-dom';
 
 class DatabaseTester extends React.Component {
 
@@ -10,21 +11,23 @@ class DatabaseTester extends React.Component {
     // TO LOG IN
     handleClear = () => {
         const fireStore = getFirestore();
-        fireStore.collection('todoLists').get().then(function(querySnapshot){
+        fireStore.collection('wireframes').get().then(function(querySnapshot){
             querySnapshot.forEach(function(doc) {
                 console.log("deleting " + doc.id);
-                fireStore.collection('todoLists').doc(doc.id).delete();
+                fireStore.collection('wireframes').doc(doc.id).delete();
             })
         });
     }
 
     handleReset = () => {
         const fireStore = getFirestore();
-        todoJson.todoLists.forEach(todoListJson => {
-            fireStore.collection('todoLists').add({
-                    name: todoListJson.name,
-                    owner: todoListJson.owner,
-                    items: todoListJson.items,
+        wireframJson.wireframes.forEach(wireframeJson => {
+            fireStore.collection('wireframes').add({
+                    name: wireframeJson.name,
+                    owner: wireframeJson.owner,
+                    controls: wireframeJson.controls,
+                    height: wireframeJson.height,
+                    width: wireframeJson.width,
                     time: Date.now()
                 }).then(() => {
                     console.log("DATABASE RESET");
@@ -35,6 +38,11 @@ class DatabaseTester extends React.Component {
     }
 
     render() {
+        console.log(this.props);
+        if(this.props.profile.admin === false){
+            console.log("hello");
+           return (<Redirect to="/"/>)
+        }
         return (
             <div>
                 <button onClick={this.handleClear}>Clear Database</button>
@@ -46,6 +54,7 @@ class DatabaseTester extends React.Component {
 const mapStateToProps = function (state) {
     return {
         auth: state.firebase.auth,
+        profile: state.firebase.profile,
         firebase: state.firebase
     };
 }

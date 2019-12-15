@@ -11,18 +11,47 @@ class HomeScreen extends Component {
     constructor(props){
         super(props);
         this.modal = React.createRef();
+        this.deleteAnim = false;
+        this.listToDelete = new Object();
+       
+        
+    }
+
+    resetStyle = () => {
+        let str = this.modal.current.style.cssText;
+        
+        if(!str.includes("translateY"))
+        this.modal.current.style = " position: absolute; width:500px; height: 200px; zindex: 5; top: -700px; transition: transform 1s ease-in; transform: translateY(700px);"
+        else
+        this.modal.current.style = " position: absolute; width:500px; height: 200px; zindex: 5; top: -700px; transition: transform 1s ease-in;"
+    }
+
+
+
+    deleteList = () => {
+        if(this.listToDelete.id != null){
+           
+            const fireStore = getFirestore();
+            
+            fireStore.collection("wireframes").doc(this.listToDelete.id).delete();
+        }
+        this.resetStyle();
+       
     }
 
     handleNewList = () => {
+        const fireStore = getFirestore();
+        
+        
         let newListData = {
-            name: 'Unnamed wireframe',
+            name: 'Unnamed Wireframe',
             owner: this.props.auth.uid,
             controls: [],
             height: 500,
             width: 500,
             time: Date.now(),
         }
-        const fireStore = getFirestore();
+        
         let newList = fireStore.collection("wireframes").doc();
         newList.set(newListData);
 
@@ -41,28 +70,28 @@ class HomeScreen extends Component {
 
         return (
             <div>
-                <div ref={this.modal} style={{position: "absolute", width:500, height: 500, zindex: 5}} id="modal1" className="modal modal-fixed-footer hoverable z-depth-2">HELLo</div>
+                
             <div className="z-depth-2 white" style={{
                 paddingBottom: '70px', borderRadius: '0 0 10px 10px',
             }}>
                 
                 <div className="dashboard container">
                     <div className="row">
-                        <div className="col s12 m4">
-                            <WireFrameLinks modal={this.modal}/>
+                        <div className="col s1 pull-s4 m4">
+                            <WireFrameLinks listToDelete = {this.listToDelete} modal = {this.modal} deleteAnim = {this.deleteAnim}/>
                         </div>
 
-                        <div style={this.style} className="waves-effect waves-light col s7 push-s3 pink lighten-1 white-text hoverable">
+                        <div style={this.style} className="waves-effect waves-light col s7 push-s3 blue lighten-1 white-text hoverable">
                              <h2 className="center-align"><i><u>Wireframer</u></i></h2><br />
                                  <h5 className="center-align">UI Mockup creater</h5>
                          </div>
 
-                         <div style={{ marginTop: '15px' }} className="home_new_list_container ">
-                                {/* {<button className="home_new_list_button" onClick={this.handleNewList}>
-                                    Create a New To Do List
-                                </button>} */}
-                                <a onClick={this.handleNewList} style={{ marginTop: '15px' }} className="col s7 push-s3 waves-effect waves-light btn-large pink lighten-1 hoverable rounded">
-                                    <i className="material-icons right">library_add</i>Create a Wireframe
+                        
+                        </div>
+                        <div className="row">
+                        <div style={{ marginTop: '15px' }} className="home_new_frame_container ">
+                                <a onClick={this.handleNewList} style={{ marginTop: '15px' }} className= "col s6 push-s3 waves-effect waves-light btn-large blue lighten-1 hoverable rounded">
+                                    Create a Wireframe
                                 </a>
                             </div>
                         </div>
@@ -70,6 +99,12 @@ class HomeScreen extends Component {
                     </div>
                     
                 </div>
+                <div ref={this.modal} style={{position: "absolute", width:500, height: 200, zindex: 5, top: -700, transition: "transform 1s ease-in"}} className="center-align card blue darken-1 hoverable z-depth-2">
+                                <div style={{margin: 10, fontSize: 20}} className="card white">
+                                    <span>Would you like to delete this list?</span><br/><br/><br/><br/>
+                                    <button onClick={this.deleteList} className="btn">Yes</button><button onClick={this.resetStyle} className="btn">No</button>
+                                </div>
+                                </div>
                 </div>
             
         );
@@ -77,27 +112,8 @@ class HomeScreen extends Component {
 
 
     componentDidMount() {
-        const options = {
-            onOpenStart: () => {
-              console.log("Open Start");
-            },
-            onOpenEnd: () => {
-              console.log("Open End");
-            },
-            onCloseStart: () => {
-              console.log("Close Start");
-            },
-            onCloseEnd: () => {
-              console.log("Close End");
-            },
-            inDuration: 250,
-            outDuration: 250,
-            opacity: 0.5,
-            dismissible: false,
-            startingTop: "4%",
-            endingTop: "10%"
-          };
-        M.Modal.init(this.modal, options);
+        
+      
     }
 }
 

@@ -18,61 +18,21 @@ body {
   font-family: 'Lexend Exa';
 }
 
-div.banner {
-  background-image: linear-gradient(to bottom,         
-  #FF5252, #7F5A95);
-  color: white;
-  font-size: 48pt;
-  border-color: black;
-  border-width: 2px;
-  border-style: solid;
-  border-radius: 10px;
-  padding-left: 10%;
-  padding-top: 5%;
-  padding-bottom: 5%;
-}
 
-.home_new_list_button {
+.home_new_frame_button {
   font-size: 32pt;
 }
-.home_new_list_button:hover {
+.home_new_frame_button:hover {
   box-shadow: 1px 2px;
-}
-
-.list_section_header {
-  position: relative !important;
-  margin-bottom: -10px !important;
-}
-
-.list_sort_header {
-  display: inline-block;
-}
-
-.list_sort_header:hover {
-  color: white;
-  cursor: pointer;
 }
 
 .rounded {
   border-radius: 10px;
 }
 
-.padding_20 {
-  padding-right: 20px;
-  padding-left: 20px;
-}
-
-.padding_12 {
-  padding-right: 12px;
-  padding-left: 12px;
-}
-
-.margin_bottom_-10 {
-  margin-bottom: -10px !important;
-}
 
 .item_card:hover {
-  background-color: #ec407a;
+  background-color: #42a5f5;
   color: white !important;
   border-radius: 10px; 
   cursor: pointer;

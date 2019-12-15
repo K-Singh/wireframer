@@ -16,7 +16,7 @@ class WireFrameLinks extends React.Component {
                         <Link className="col s8"to={'/wireFrame/' + wireFrame.id} key={wireFrame.id}>
                             <WireFrameCard className="center-align" wireFrame={wireFrame} />
                         </Link>
-                        <WireFrameDelete modal={this.props.modal} wireFrame = {wireFrame}/>
+                        <WireFrameDelete modal ={this.props.modal}  listToDelete={this.props.listToDelete} deleteAnim={this.props.deleteAnim} wireFrame = {wireFrame}/>
                     </div>
                 ))}
             </div>

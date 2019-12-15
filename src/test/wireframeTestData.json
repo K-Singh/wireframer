@@ -1,0 +1,54 @@
+{
+    "wireframes": [
+        {
+            "name": "My wireframe",
+            "owner": "kcdq4L4d7uTBdnKTtZ9LFlxgGaq1",
+            "height": 500,
+            "width": 500,
+            "controls": [
+                {
+                    "type": "container",
+                    "width": 300,
+                    "height": 300,
+                    "x": 100,
+                    "y": 100,
+                    "color": "#ffccff",
+                    "borderColor": "#000000",
+                    "borderRadius": "20px",
+                    "borderWidth": "5px",
+                    "ref": {}
+                  },
+                  {
+                    "type": "label",
+                    "width": 100,
+                    "height": 50,
+                    "x": 150,
+                    "y": 150,
+                    "borderColor": "#000000",
+                    "fontSize": "20px",
+                    "fontColor": "#000000",
+                    "value": "hello!",
+                    "color": "#ffccff",
+                    "borderRadius": "0px",
+                    "borderWidth": "5px",
+                    "ref": {}
+                  },
+                  {
+                    "type": "button",
+                    "width": 200,
+                    "height": 40,
+                    "x": 150,
+                    "y": 250,
+                    "fontColor": "#ffffff",
+                    "borderColor": "#000000",
+                    "fontSize": "20px",
+                    "value": "CLICK ME!",
+                    "color": "#03fca9",
+                    "borderRadius": "0px",
+                    "borderWidth": "1px",
+                    "ref": {}
+                  }
+            ]
+        }
+    ]
+}

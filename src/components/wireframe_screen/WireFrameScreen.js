@@ -26,13 +26,13 @@ class WireFrameScreen extends Component {
         
         this.currentWidth = 500;
         this.currentHeight = 500;
-       
+        this.currentName = "Unnamed Wireframe";
        
         if(this.props.wireFrame != null){
-            console.log("help!!!!");
+           
             this.currentWidth = this.props.wireFrame.width;
             this.currentHeight = this.props.wireFrame.height;
-            
+            this.currentName = this.props.wireFrame.name;
         }
         this.widthRef = React.createRef();
         this.heightRef = React.createRef();
@@ -49,6 +49,8 @@ class WireFrameScreen extends Component {
         this.submitRef = React.createRef();
         this.scale = 1;
         this.scaleRef = React.createRef();
+        this.rndRef = React.createRef();
+        this.nameRef = React.createRef();
     }
 
 
@@ -57,13 +59,43 @@ class WireFrameScreen extends Component {
     sortCriteria = 'none';
     changedTime = false;
 
+    onKeysPressed = e => {
+        
+        if(e.key === "d"){
+         
+          if(e.ctrlKey){
+            
+            if(this.state.select != null){
+              let duplicate = {...this.state.select};
+              let newArray = this.state.controls;
+              duplicate.x += 100;
+              duplicate.y += 100;
+              newArray.push(duplicate)
+              this.setState({controls: newArray, select: duplicate});
+            }
+          }
+        }
+          if(e.keyCode === 46){
+            if(this.state.select != null){
+                
+                let newArray = this.state.controls;
+                let filteredArray = newArray.filter(control => control != this.state.select)
+                
+                this.setState({controls: filteredArray, select: null});
+              }
+           
+          }
+        }
+      
+
     onSave(e, id){
         const fireStore = getFirestore();
        
         fireStore.collection("wireframes").doc(id).update({
            controls: this.state.controls,
            width: parseInt(this.currentWidth, 10),
-           height: parseInt(this.currentHeight, 10)
+           height: parseInt(this.currentHeight, 10),
+           name: this.currentName
         });
 
         
@@ -281,7 +313,7 @@ class WireFrameScreen extends Component {
     renderRNDControl = (controlObject) => {
         
         if(controlObject.type === "container"){
-            return <Rnd  onDragStop = { (e, d) => this.stopDrag(e, d, controlObject)} onResizeStop={(e, dir, ref, delta, pos) => this.stopResize(e, dir, ref, delta, pos, controlObject)}
+            return <Rnd onDragStop = { (e, d) => this.stopDrag(e, d, controlObject)} onResizeStop={(e, dir, ref, delta, pos) => this.stopResize(e, dir, ref, delta, pos, controlObject)}
             style={{backgroundColor: controlObject.color, borderWidth: controlObject.borderWidth, borderStyle: "solid", 
             borderRadius: controlObject.borderRadius, borderColor: controlObject.borderColor}} 
             bounds = "parent"
@@ -436,6 +468,7 @@ class WireFrameScreen extends Component {
 
         this.currentWidth = this.widthRef.current.value;
         this.currentHeight = this.heightRef.current.value;
+        this.currentName = this.nameRef.current.value;
        // let fireStore = getFirestore();
       //  fireStore.collection('wireframes').doc(this.props.wireFrame.id).update({ height: this.currentHeight })
        // fireStore.collection('wireframes').doc(this.props.wireFrame.id).update({ width: this.currentWidth })
@@ -457,7 +490,6 @@ class WireFrameScreen extends Component {
     }
    
 
-
    
 
     componentDidMount(){
@@ -465,6 +497,7 @@ class WireFrameScreen extends Component {
            
             this.widthRef.current.value = this.props.wireFrame.width;
             this.heightRef.current.value = this.props.wireFrame.height;
+            this.nameRef.current.value = this.props.wireFrame.name;
             this.dimensionRef.current.disabled = 1;
             this.submitRef.current.disabled = 1;
             this.frameRef.current.style = "width: "+this.props.wireFrame.width+"px; height: "+this.props.wireFrame.height+"px; display: block; position: relative; transform: scale(1,1);"
@@ -509,9 +542,9 @@ class WireFrameScreen extends Component {
         }
        
         return (
-            <div style={{backgroundColor:  "#473850", marginTop: 10}} className="row lighten-2">
+            <div  style={{backgroundColor:  "#473850", marginTop: 10}} className="row lighten-2">
                <div style={{backgroundColor: "#424242"}}className="pull-s1 card col s2 rounded black-text" > 
-                    <div style={{padding: 15}} className="card rounded pink lighten-1 white-text">
+                    <div style={{padding: 15}} className="card rounded blue lighten-1 white-text">
                         <div style={{margin: 0}}className="row">
                             
                             <div style={{fontSize: "3rem", cursor: "pointer"}} onClick={() => this.onZoomIn()} className="col s3 pull-s1 material-icons">zoom_in</div> 
@@ -520,7 +553,7 @@ class WireFrameScreen extends Component {
                             <div style={{fontSize: "3rem", cursor: "pointer"}} onClick={() => this.onExit()}className="col s3 pull-s1 material-icons">close</div>
                         </div>
                     </div>
-                    <div className=" card rounded pink lighten-1 white-text">
+                    <div className=" card rounded blue lighten-1 white-text">
                         <form style={{marginTop: 10, paddingBottom: 0}}>
                             <div style={{marginBottom: 10}} className="row">
                                 <div className="col s2">Width:</div> 
@@ -530,13 +563,17 @@ class WireFrameScreen extends Component {
                                 <div className="col s2">Height:</div> 
                                 <input ref={this.heightRef} onChange={this.handleChange} style={{fontSize: 15, height: 20}}className="white col s6 push-s3" type="number" min="1" max="5000" ></input>
                             </div>
+                            <div style={{marginBottom: 10}} className="row">
+                                <div className="col s2">Name:</div> 
+                                <input ref={this.nameRef} onChange={this.handleChange} style={{fontSize: 15, height: 20}}className="white col s6 push-s3" type="text"></input>
+                            </div>
                             <div className="row">
                                  
                                 <button style={{marginTop: 10}} ref={this.dimensionRef} type="button" onClick={this.updateDimensions} className=" col s6 push-s3 btn">Update</button>
                             </div>
                         </form>
                     </div>
-                    <div className=" card rounded pink lighten-1 white-text">
+                    <div className=" card rounded blue lighten-1 white-text">
                         <div style={{paddingTop: 10, cursor: "pointer"}} onClick={this.createContainer}  className="row">
                             <div style={{height: 40}}className="col s8 push-s2 white white-text rounded"></div>
                             <div className="col s6 push-s3 white-text">Container</div>
@@ -561,8 +598,8 @@ class WireFrameScreen extends Component {
                     </div>
                 </div>
                <div style={{marginTop: 7.5, paddingTop: 30, paddingLeft: 30, paddingRight: 30, height: 800, backgroundColor: "#424242"}} className="card col s8 black-text center-align" >
-               <div ref={this.scaleRef} style={{height: 700, overflow:'auto', backgroundColor: "#424242"}} className="" >
-                    <div ref={this.frameRef} style={{width: 500, height: 500, display: 'block', position: "relative"}} onClick={(e) => this.deSelectControl(e)} className="white">
+               <div ref={this.scaleRef} onKeyDown={this.onKeysPressed} tabIndex="0" autoFocus style={{height: 700, overflow:'auto', backgroundColor: "#424242"}} className="" >
+                    <div ref={this.frameRef}  style={{width: 500, height: 500, display: 'block', position: "relative"}} onClick={(e) => this.deSelectControl(e)} className="white">
                         {this.state.controls.filter(control => control != this.state.select).map(control => {
                            return this.renderControl(control)
                         }
@@ -573,15 +610,15 @@ class WireFrameScreen extends Component {
 
                </div>
                <div style={{backgroundColor: "#424242"}}className="push-s1 card col s2 rounded black-text" > 
-                    <div style={{padding: 15}} className="card rounded pink lighten-1 white-text">
+                    <div style={{padding: 15}} className="card rounded blue lighten-1 white-text">
                     <form style={{marginTop: 10, paddingBottom: 0}}>
                             <div style={{marginBottom: 10}} className="row">
                                 <span style={{fontSize: 10}} className="pull-s2 col s10">Border Width:</span> 
-                                <input ref={this.borderWidthRef} disabled style={{fontSize: 10, height: 20}}className="push-s1 white col s2" type="number" min="1" max="100" step="1" ></input>
+                                <input ref={this.borderWidthRef} disabled style={{fontSize: 10, height: 20}}className="push-s1 white col s2" type="number" min="0" max="100" step="1" ></input>
                             </div>
                             <div style={{marginBottom: 10}} className="row">
                                 <div style={{fontSize: 10}} className="pull-s2 col s10">Border Radius:</div> 
-                                <input ref={this.borderRadiusRef} disabled style={{fontSize: 10, height: 20}}className="white col s2 push-s1" type="number" min="1" max="200" step="1" ></input>
+                                <input ref={this.borderRadiusRef} disabled style={{fontSize: 10, height: 20}}className="white col s2 push-s1" type="number" min="0" max="200" step="1" ></input>
                             </div>
                             <div style={{marginBottom: 10}} className="row">
                                 <div style={{fontSize: 10}} className="pull-s2 col s8">Border Color:</div> 
